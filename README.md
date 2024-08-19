@@ -1,11 +1,11 @@
 # Business Performance Analytics
 
 ## Overview
-The **Business Performance Analytics** project is designed to deliver insights into business performance, specifically tailored for an eBay seller store. This dashboard provides an interactive platform for analyzing sales data, customer behavior, marketing effectiveness, and financial metrics. By leveraging this tool, business owners can make informed decisions to optimize operations, increase revenue, and enhance customer satisfaction.
+The **Business Performance Analytics** project is designed to get insights into business performance, specifically for an eBay seller store. This provides an interactive dashboard for analyzing sales data, customer behavior, marketing effectiveness, and financial metrics. By leveraging this tool, business owners can make informed decisions to optimize operations, increase revenue, and enhance customer satisfaction.
 
 ## Features
-- **High-Level Overview**: Summary of key business metrics, financial performance, and trends.
-- **Sales Insights**: Detailed analysis of sales performance, including revenue trends, product performance, and cost breakdowns.
+- **High-Level Overview**: A summary of key business metrics, financial performance, and trends.
+- **Sales Insights**: Shows detailed sales performance analysis, including revenue trends, product performance, and cost breakdowns.
 - **Customer Behavior**: Insights into customer segmentation, lifetime value, acquisition costs, and conversion rates.
 - **Demand Elasticity**: Analysis of price elasticity and its impact on product demand and pricing strategies.
 - **Marketing Attribution**: Evaluation of marketing channels, conversion rates, and customer journey analysis.
@@ -58,5 +58,14 @@ This project includes the development of a user-friendly dashboard that integrat
 
 ## Usage
 Once the application is running, user can explore various sections of the dashboard to gain insights into different aspects of the business.
+
+## Screenshots
+
+![overview-tab](https://github.com/noorulhudaajmal/business-performance-analytics/blob/main/images/1.png)
+![sales-report](https://github.com/noorulhudaajmal/business-performance-analytics/blob/main/images/2.png)
+![customer-report](https://github.com/noorulhudaajmal/business-performance-analytics/blob/main/images/3.png)
+![demand](https://github.com/noorulhudaajmal/business-performance-analytics/blob/main/images/4.png)
+![market](https://github.com/noorulhudaajmal/business-performance-analytics/blob/main/images/5.png)
+![accounts](https://github.com/noorulhudaajmal/business-performance-analytics/blob/main/images/6.png)
 
 ---
