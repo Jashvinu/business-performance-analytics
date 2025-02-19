@@ -34,28 +34,40 @@ with st.sidebar:
 # ----------------------------------- Data Loading ------------------------------
 # Create a connection object.
 conn = st.connection("gsheets", type=GSheetsConnection)
+
+# Read the data
 balance_data = conn.read(
+    spreadsheet=st.secrets.gsheets.spreadsheet,  # Add this line
     worksheet="balance_sheet",
 )
+
 income_data = conn.read(
-    worksheet="income_data",
+    spreadsheet=st.secrets.gsheets.spreadsheet,  # Add this line
+    worksheet="income_statement",
 )
+
 cash_data = conn.read(
+    spreadsheet=st.secrets.gsheets.spreadsheet,  # Add this line
     worksheet="cash_flow"
 )
 customers_data = conn.read(
+    spreadsheet=st.secrets.gsheets.spreadsheet,  # Add this line
     worksheet="customers_report"
 )
 sales_data = conn.read(
+    spreadsheet=st.secrets.gsheets.spreadsheet,  # Add this line
     worksheet="sales_report"
 )
 products_data = conn.read(
+    spreadsheet=st.secrets.gsheets.spreadsheet,  # Add this line
     worksheet="products_data"
 )
 market_data = conn.read(
+    spreadsheet=st.secrets.gsheets.spreadsheet,  # Add this line
     worksheet="market_data"
 )
 media_data = conn.read(
+    spreadsheet=st.secrets.gsheets.spreadsheet,  # Add this line
     worksheet="media_data"
 )
 

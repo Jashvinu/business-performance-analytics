@@ -4,3 +4,4 @@ plotly==5.16.1
 st_gsheets_connection==0.0.4
 streamlit==1.36.0
 streamlit_option_menu==0.3.13
+distutils
