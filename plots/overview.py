@@ -11,9 +11,7 @@ colors = ["#2a9d8f", "#264653", "#e9c46a", "#f4a261", "#e76f51", "#ef233c", "#f6
 
 def income_statement(df):
     expense_columns = ['WageExp', 'AdSpend', 'BankFees', 'DepExp', 'Rent', 'Supplies', 'Utils',
-                       'PayrollTax', 'OthExp', 'Increase in TP', 'Increase in WP',
-                       'Increase in Inventory', 'Increase Marketable Securities', 'Increase Allowance for Bad Debt',
-                       'Increase Prepaid Expenses']
+                       'PayrollTax', 'OthExp']
     revenue_columns = ['Rev', 'ReturnAllow']
 
     df["Total Expense"] = df[expense_columns].sum(axis=1)

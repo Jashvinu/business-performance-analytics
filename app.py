@@ -35,33 +35,33 @@ with st.sidebar:
 # Create a connection object.
 conn = st.connection("gsheets", type=GSheetsConnection)
 balance_data = conn.read(
-    worksheet="Balance Sheet",
+    worksheet="balance_sheet",
 )
 income_data = conn.read(
-    worksheet="Income DataSheet",
+    worksheet="income_data",
 )
 cash_data = conn.read(
-    worksheet="Cash Flow"
+    worksheet="cash_flow"
 )
 customers_data = conn.read(
-    worksheet="Customers Report"
+    worksheet="customers_report"
 )
 sales_data = conn.read(
-    worksheet="Sales Report"
+    worksheet="sales_report"
 )
 products_data = conn.read(
-    worksheet="Products Data"
+    worksheet="products_data"
 )
 market_data = conn.read(
-    worksheet="Market Data"
+    worksheet="market_data"
 )
 media_data = conn.read(
-    worksheet="Media Data"
+    worksheet="media_data"
 )
 
 # --------------------------- Data Pre-processing -------------------------------
 
-customers_sales_data = pd.merge(customers_data, sales_data, on='Customer ID')
+customers_sales_data = pd.merge(customers_data, sales_data, on='Customer_ID')
 (balance_data, income_data, cash_data, customers_sales_data,
  market_data, media_data) = preprocess_data([balance_data, income_data, cash_data,
                                              customers_sales_data, market_data, media_data])

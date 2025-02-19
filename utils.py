@@ -98,14 +98,14 @@ def get_conversion_rate(data: pd.DataFrame):
     """
     Calculates the conversion rate.
 
-    :param data: DataFrame containing column 'Customer ID'.
+    :param data: DataFrame containing column 'Customer_ID'.
     :return: Conversion rate as a percentage.
     """
     try:
         # Total number of rows or records
         number_of_conversions = len(data)
-        # Number of unique customer IDs
-        number_of_visitors = data['Customer ID'].nunique()
+        # Number of unique Customer_IDs
+        number_of_visitors = data['Customer_ID'].nunique()
         # Calculating conversion rate
         conversion_rate = (number_of_visitors / number_of_conversions) * 100
         return conversion_rate
@@ -117,11 +117,11 @@ def get_aov(data: pd.DataFrame):
     """
     Calculates the Average Order Value (AOV).
 
-    :param data: DataFrame containing column 'Total Revenue'.
+    :param data: DataFrame containing column 'Total Revenue_y'.
     :return: Average Order Value.
     """
     try:
-        aov = data['Total Revenue'].sum() / len(data)
+        aov = data['Total Revenue_y'].sum() / len(data)
         return aov
     except ZeroDivisionError:
         return 0
@@ -131,11 +131,11 @@ def get_rev_by_customer(data: pd.DataFrame):
     """
     Calculates the average revenue per customer.
 
-    :param data: DataFrame containing columns 'Customer ID' and 'Total Revenue'.
+    :param data: DataFrame containing columns 'Customer_ID' and 'Total Revenue_y'.
     :return: Average revenue per customer.
     """
     try:
-        revenue_by_customer = data.groupby('Customer ID')['Total Revenue'].sum().mean()
+        revenue_by_customer = data.groupby('Customer_ID')['Total Revenue_y'].sum().mean()
         return revenue_by_customer
     except ZeroDivisionError:
         return 0
@@ -143,13 +143,13 @@ def get_rev_by_customer(data: pd.DataFrame):
 
 def shipping_amount(data: pd.DataFrame):
     """
-    Calculates the shipping amount as a percentage of total revenue.
+    Calculates the shipping amount as a percentage of Total Revenue_y.
 
-    :param data: DataFrame containing columns 'Shipping Amount' and 'Total Revenue'.
+    :param data: DataFrame containing columns 'Shipping Amount' and 'Total Revenue_y'.
     :return: Shipping amount percentage.
     """
     try:
-        shipping_percentage = (data['Shipping Amount'].sum() / data['Total Revenue'].sum()) * 100
+        shipping_percentage = (data['Shipping Amount'].sum() / data['Total Revenue_y'].sum()) * 100
         return shipping_percentage
     except ZeroDivisionError:
         return 0
@@ -157,13 +157,13 @@ def shipping_amount(data: pd.DataFrame):
 
 def tax_amount(data: pd.DataFrame):
     """
-    Calculates the tax amount as a percentage of total revenue.
+    Calculates the tax amount as a percentage of Total Revenue_y.
 
-    :param data: DataFrame containing columns 'Tax' and 'Total Revenue'.
+    :param data: DataFrame containing columns 'Tax' and 'Total Revenue_y'.
     :return: Tax amount percentage.
     """
     try:
-        tax_percentage = (data['Tax'].sum() / data['Total Revenue'].sum()) * 100
+        tax_percentage = (data['Tax'].sum() / data['Total Revenue_y'].sum()) * 100
         return tax_percentage
     except ZeroDivisionError:
         return 0
@@ -173,11 +173,11 @@ def gross_profit_margin(data: pd.DataFrame):
     """
     Calculates the gross profit margin.
 
-    :param data: DataFrame containing columns 'Gross Profit' and 'Total Revenue'.
+    :param data: DataFrame containing columns 'Gross Profit' and 'Total Revenue_y'.
     :return: Gross profit margin percentage.
     """
     try:
-        margin = (data['Gross Profit'].sum() / data['Total Revenue'].sum()) * 100
+        margin = (data['Gross Profit'].sum() / data['Total Revenue_y'].sum()) * 100
         return margin
     except ZeroDivisionError:
         return 0
@@ -185,20 +185,20 @@ def gross_profit_margin(data: pd.DataFrame):
 
 def get_discount_rate(data: pd.DataFrame):
     """
-    Calculates the discount rate as a percentage of total revenue.
+    Calculates the discount rate as a percentage of Total Revenue_y.
 
-    :param data: DataFrame containing columns 'Discount' and 'Total Revenue'.
+    :param data: DataFrame containing columns 'Discount' and 'Total Revenue_y'.
     :return: Discount rate percentage.
     """
     try:
-        discount_rate = (data['Discount'].sum() / data['Total Revenue'].sum()) * 100
+        discount_rate = (data['Discount'].sum() / data['Total Revenue_y'].sum()) * 100
         return discount_rate
     except ZeroDivisionError:
         return 0
 
 def get_total_revenue(data):
-    data["Total Revenue"] = data["Units Sold"] * data["Price Ratio"]
-    return data["Total Revenue"].sum()
+    data["Total Revenue_y"] = data["Units Sold"] * data["Price Ratio"]
+    return data["Total Revenue_y"].sum()
 
 
 def get_sales_volume(data):

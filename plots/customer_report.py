@@ -29,8 +29,9 @@ def churn_by_dash_segment(data):
 
 
 def sales_by_dash_segment(data):
-    data["Month"] = data["Month"].apply(lambda x:MONTHS[x-1])
-    revenue_by_loyalty_and_month = data.groupby(["Dash Segment", "Month"])['CLTV Monetary Value'].sum().unstack()
+    data["Month"] = data["Month"].apply(lambda x: MONTHS[x-1])
+    revenue_by_loyalty_and_month = data.groupby(["Dash Segment", "Month"])[
+        'CLTV Monetary Value'].sum().unstack()
     revenue_by_loyalty_and_month = revenue_by_loyalty_and_month.transpose()
     fig = go.Figure()
     colors = ["#0fa3b1", "#b5e2fa", "#eddea4", "#f7a072", "#f9f7f3"]
@@ -50,11 +51,12 @@ def sales_by_dash_segment(data):
 
 
 def rev_by_dash_segment(data):
-    revenue_by_dash_segment = data.groupby('Dash Segment')['Total Revenue'].sum().reset_index()
+    revenue_by_dash_segment = data.groupby(
+        'Dash Segment')['Total Revenue_y'].sum().reset_index()
     fig = px.pie(
         revenue_by_dash_segment,
         names=revenue_by_dash_segment["Dash Segment"],
-        values=revenue_by_dash_segment["Total Revenue"],
+        values=revenue_by_dash_segment["Total Revenue_y"],
         title="Revenue Contribution by Dash Segment",
         hole=0.3, color_discrete_sequence=["#0fa3b1", "#b5e2fa", "#eddea4", "#f7a072", "#f9f7f3"]
     )
@@ -64,22 +66,23 @@ def rev_by_dash_segment(data):
 
 def group_analysis(data, group):
     # Revenue by Group
-    revenue_by_dash_segment = data.groupby(group)['Total Revenue'].sum().reset_index()
+    revenue_by_dash_segment = data.groupby(
+        group)['Total Revenue_y'].sum().reset_index()
     revenue_pie = go.Pie(
         labels=revenue_by_dash_segment[group],
-        values=revenue_by_dash_segment["Total Revenue"],
-        # title="Revenue",
+        values=revenue_by_dash_segment["Total Revenue_y"],
         hole=0.3,
-        marker=dict(colors=["#0fa3b1", "#b5e2fa", "#eddea4", "#f7a072", "#f9f7f3", "#eddea4", "#f2bf8b"])
+        marker=dict(colors=["#0fa3b1", "#b5e2fa", "#eddea4",
+                    "#f7a072", "#f9f7f3", "#eddea4", "#f2bf8b"])
     )
 
     # Customer Churn by Group
     churn_pie = go.Pie(
         labels=data[group],
         values=data["Churn"],
-        # title="Churn",
         hole=0.3,
-        marker=dict(colors=["#0fa3b1", "#b5e2fa", "#eddea4", "#f7a072", "#f9f7f3", "#eddea4", "#f2bf8b"])
+        marker=dict(colors=["#0fa3b1", "#b5e2fa", "#eddea4",
+                    "#f7a072", "#f9f7f3", "#eddea4", "#f2bf8b"])
     )
 
     # Subplots
@@ -99,8 +102,8 @@ def group_analysis(data, group):
 
 
 def rev_by_loyalty_group(data):
-    revenue_by_loyalty = data.groupby('Loyalty Group')['Total Revenue'].sum().reset_index().rename(
-        {"Total Revenue": "Contribution"}, axis=1
+    revenue_by_loyalty = data.groupby('Loyalty Group')['Total Revenue_y'].sum().reset_index().rename(
+        {"Total Revenue_y": "Contribution"}, axis=1
     )
     fig = px.pie(
         revenue_by_loyalty,
@@ -118,15 +121,18 @@ def rev_by_loyalty_group(data):
 
 def cltv_by_month(data):
     data["Month"] = data["Valuation Date"].dt.month
-    avg_cltv_by_month = data.groupby('Month')['CLTV Monetary Value'].mean().reset_index()
-    avg_cltv_by_month["Month"] = avg_cltv_by_month["Month"].apply(lambda x: MONTHS[x - 1])
+    avg_cltv_by_month = data.groupby(
+        'Month')['CLTV Monetary Value'].mean().reset_index()
+    avg_cltv_by_month["Month"] = avg_cltv_by_month["Month"].apply(
+        lambda x: MONTHS[x - 1])
     fig = go.Figure(
         go.Bar(
             x=avg_cltv_by_month["Month"],
             y=avg_cltv_by_month["CLTV Monetary Value"],
             marker=dict(color="#2a9d8f"),
             text=round(avg_cltv_by_month["CLTV Monetary Value"], 2),
-            hovertext="Avg. CLTV=" + round(avg_cltv_by_month["CLTV Monetary Value"], 2).astype(str),
+            hovertext="Avg. CLTV=" +
+            round(avg_cltv_by_month["CLTV Monetary Value"], 2).astype(str),
         )
     )
     fig.update_layout(
@@ -138,11 +144,13 @@ def cltv_by_month(data):
 
 def conversion_and_purchase_rates(data):
     data["Month"] = data["Valuation Date"].dt.month
-    con_rate = data.groupby('Month')['Customer ID'].nunique().reset_index()
+    con_rate = data.groupby('Month')['Customer_ID'].nunique().reset_index()
     conversion = data['Month'].value_counts().reset_index()
-    conversion.rename(columns={"index": "Month", "Month": "num_conversion"}, inplace=True)
+    conversion.rename(
+        columns={"index": "Month", "Month": "num_conversion"}, inplace=True)
     con_rate = pd.merge(con_rate, conversion, on="Month")
-    con_rate["conversion_rate"] = (con_rate["Customer ID"] / con_rate["num_conversion"]) * 100
+    con_rate["conversion_rate"] = (
+        con_rate["Customer_ID"] / con_rate["num_conversion"]) * 100
     con_rate.sort_values(by="Month", inplace=True)
     con_rate["Month"] = con_rate["Month"].apply(lambda x: MONTHS[x - 1])
 
@@ -151,24 +159,30 @@ def conversion_and_purchase_rates(data):
         x=con_rate['Month'],
         y=con_rate['conversion_rate'],
         name='Conversion Rate', marker=dict(color="#006d77"),
-        text=con_rate['conversion_rate'].apply(lambda rate: f"{round(rate, 2)}%"),
+        text=con_rate['conversion_rate'].apply(
+            lambda rate: f"{round(rate, 2)}%"),
     ))
 
-    purchase_counts = data.groupby(['Customer ID', 'Month']).size().reset_index(name='purchase_count')
+    purchase_counts = data.groupby(
+        ['Customer_ID', 'Month']).size().reset_index(name='purchase_count')
     purchase_counts = purchase_counts[purchase_counts['purchase_count'] > 1]
 
-    total_customers = purchase_counts.groupby('Month')['Customer ID'].nunique().reset_index()
-    purchase_counts = purchase_counts.groupby("Month")["purchase_count"].sum().reset_index()
+    total_customers = purchase_counts.groupby(
+        'Month')['Customer_ID'].nunique().reset_index()
+    purchase_counts = purchase_counts.groupby(
+        "Month")["purchase_count"].sum().reset_index()
     repeat_purchase = pd.merge(purchase_counts, total_customers, on="Month")
-    repeat_purchase["repeat_purchase_rate"] = (repeat_purchase["Customer ID"] / repeat_purchase[
+    repeat_purchase["repeat_purchase_rate"] = (repeat_purchase["Customer_ID"] / repeat_purchase[
         "purchase_count"]) * 100
     repeat_purchase.sort_values(by="Month", inplace=True)
-    repeat_purchase["Month"] = repeat_purchase["Month"].apply(lambda x:MONTHS[x-1])
+    repeat_purchase["Month"] = repeat_purchase["Month"].apply(
+        lambda x: MONTHS[x-1])
 
     fig.add_trace(go.Bar(
         x=repeat_purchase["Month"],
         y=repeat_purchase["repeat_purchase_rate"],
-        text=repeat_purchase['repeat_purchase_rate'].apply(lambda rate: f"{round(rate, 2)}%"),
+        text=repeat_purchase['repeat_purchase_rate'].apply(
+            lambda rate: f"{round(rate, 2)}%"),
         textposition='auto', marker=dict(color="#52b69a"),
         name="Repeat Purchase Rate"
     ))

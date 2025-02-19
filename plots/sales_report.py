@@ -6,12 +6,12 @@ from constants import MONTHS
 
 def monthly_gross_rev(filtered_data):
     filtered_data['Month'] = filtered_data['Valuation Date'].dt.month
-    revenue_data = filtered_data.groupby("Month")["Total Revenue", "Gross Profit"].sum().reset_index()
+    revenue_data = filtered_data.groupby("Month")["Total Revenue_y", "Gross Profit"].sum().reset_index()
     revenue_data["Month"] = revenue_data["Month"].apply(lambda x: MONTHS[x-1])
     revenue_data.sort_values(by="Month", inplace=True)
     fig = go.Figure()
     fig.add_trace(go.Scatter(
-        x=revenue_data["Month"], y=revenue_data["Total Revenue"], mode="lines+markers+text",
+        x=revenue_data["Month"], y=revenue_data["Total Revenue_y"], mode="lines+markers+text",
         marker=dict(color="#e76f51"), line=dict(color="#e76f51"), textposition="top center", name="Revenue"))
     fig.add_trace(go.Scatter(
         x=revenue_data["Month"], y=revenue_data["Gross Profit"], mode="lines+markers",
@@ -39,35 +39,35 @@ def cost_breakdown_chart(filtered_data):
 
 
 def sales_by_location(filtered_data):
-    loc_data = filtered_data.groupby("Conversion Country")["Total Revenue", "Gross Profit"].sum().reset_index()
-    loc_data = loc_data.sort_values(by="Total Revenue", ascending=False)
+    loc_data = filtered_data.groupby("Conversion Country")["Total Revenue_y", "Gross Profit"].sum().reset_index()
+    loc_data = loc_data.sort_values(by="Total Revenue_y", ascending=False)
     fig = go.Figure()
     fig.add_trace(go.Bar(
-        x=loc_data["Conversion Country"], y=loc_data["Total Revenue"], name="Revenue",
-        text=round(loc_data["Total Revenue"], 1), marker=dict(color="#287271"),
+        x=loc_data["Conversion Country"], y=loc_data["Total Revenue_y"], name="Revenue",
+        text=round(loc_data["Total Revenue_y"], 1), marker=dict(color="#287271"),
     ))
     fig.add_trace(go.Bar(
         x=loc_data["Conversion Country"], y=loc_data["Gross Profit"], name="Gross Profit",
         text=round(loc_data["Gross Profit"], 1), marker=dict(color="#babb74"),
     ))
     fig.update_layout(title="Sales by Location", barmode="group", legend_title="Sales",
-                      xaxis_title="Country", yaxis_title="Total Revenue")
+                      xaxis_title="Country", yaxis_title="Total Revenue_y")
     fig = update_hover_layout(fig)
     return fig
 
 
 def rev_by_products(filtered_data):
-    product_performance = filtered_data.groupby('Product Item Name')['Total Revenue'].sum().reset_index()
-    product_performance = product_performance.sort_values(by="Total Revenue", ascending=False)
+    product_performance = filtered_data.groupby('Product Item Name')['Total Revenue_y'].sum().reset_index()
+    product_performance = product_performance.sort_values(by="Total Revenue_y", ascending=False)
     product_performance["Product Item Name"] = product_performance["Product Item Name"].str[16:]
     fig = go.Figure()
     fig.add_trace(go.Bar(
         x=product_performance["Product Item Name"],
-        y=product_performance["Total Revenue"],
+        y=product_performance["Total Revenue_y"],
         marker=dict(color="#55b1a5"),
     ))
     fig.update_layout(
-        title="Product Performance", xaxis_title="Product Name", yaxis_title="Total Revenue",
+        title="Product Performance", xaxis_title="Product Name", yaxis_title="Total Revenue_y",
         xaxis_tickangle=-45,
     )
     fig = update_hover_layout(fig)
