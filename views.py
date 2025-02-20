@@ -8,8 +8,14 @@ from plots.customer_report import cltv_by_month, rev_by_dash_segment, churn_by_d
 from plots.marketing import event_seq_funnel, event_seq_pie, channels_performance, aov_by_channels, channel_funnel
 from plots.overview import clv_by_cac_chart, debt_and_equity, income_statement
 from plots.sales_report import monthly_gross_rev, cost_breakdown_chart, sales_by_location, rev_by_products
-from plots.demand_elasticity import (price_elasticity_overtime, elasticity_vs_base_price,
-                                     shipping_vs_tax_ratio, price_and_qty_overtime, sales_volume_overtime)
+from plots.demand_elasticity import (
+    prepare_data,
+    price_elasticity_overtime,
+    elasticity_vs_base_price,
+    shipping_vs_tax_ratio,
+    sales_volume_overtime,
+    price_and_qty_overtime
+)
 from utils import current_and_previous_data, get_overview_kpis, get_conversion_rate, \
     get_aov, tax_amount, gross_profit_margin, get_discount_rate, shipping_amount, get_conv_rate, get_visitor_engagement, \
     format_currency_label
@@ -98,42 +104,56 @@ def customer_report(data):
 
 
 def demand_elasticity(data):
-    # --------------------------- Pre-processing -----------------------------
-    data['Date'] = pd.to_datetime(data['Key'].str[:10])
-    data['Year'] = data['Date'].dt.year
-    data['Month'] = data['Date'].dt.month
-    data = data.sort_values(by="Date")
+    """
+    Display demand elasticity analysis in the Streamlit app
+    """
+    try:
+        st.title("Demand Elasticity Analysis")
+        
+        # Debug information
+        #st.write("Available columns:", data.columns.tolist())
+        
+        # Prepare data once for all visualizations
+        processed_data = prepare_data(data)
+        
+        # Create two columns for the layout
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.subheader("Price Elasticity Over Time")
+            fig1 = price_elasticity_overtime(processed_data)
+            st.plotly_chart(fig1, use_container_width=True)
 
-    data["Price Change"] = data["Price Ratio"].pct_change()
-    data["Quantity Change"] = data["Units Sold"].pct_change()
-    data["Price Elasticity"] = data["Quantity Change"] / data["Price Change"]
+            
 
-    product = st.sidebar.multiselect(label="Product", options=set(data["Product"].values))
-    if not product:
-        product = set(data["Product"].values)
+        with col2:
+            st.subheader("Sales Volume Analysis")
+            fig2 = sales_volume_overtime(processed_data)
+            st.plotly_chart(fig2, use_container_width=True)
+        
+        # with col2:
+        #     st.subheader("Price Elasticity vs Base Price")
+        #     fig3 = elasticity_vs_base_price(processed_data)
+        #     st.plotly_chart(fig3, use_container_width=True)
+        
+        st.subheader("Price and Quantity Analysis")
+        fig4 = price_and_qty_overtime(processed_data)
+        st.plotly_chart(fig4, use_container_width=True)
+        
+        # Full width chart at the bottom
+        st.subheader("Shipping and Tax Impact")
+        fig5 = shipping_vs_tax_ratio(processed_data)
+        st.plotly_chart(fig5, use_container_width=True)
+        
+    except Exception as e:
+        st.error(f"Error in demand elasticity analysis: {str(e)}")
+        st.write("Please make sure your data contains the following columns:")
+        st.write("- Date (or a column containing dates)")
+        st.write("- Price Elasticity")
+        st.write("- Base Price")
+        st.write("- Units Sold")
+        st.write("- Product")
 
-    data = data[data["Product"].isin(product)]
-
-    # --------------------------- Filters ------------------------------------
-    year = st.sidebar.multiselect(label="Year", options=sorted(set(data["Year"].values)),
-                                  placeholder="All")
-    if not year:
-        year = list(sorted(set(data["Year"].values)))
-
-    filtered_data = data.copy()
-    if year:
-        filtered_data = data[data["Year"].isin(year)]
-
-    # --------------------------- KPIs ---------------------------------------
-    first_row = st.columns((2, 1))
-    first_row[0].plotly_chart(elasticity_vs_base_price(filtered_data), use_container_width=True)
-    first_row[1].plotly_chart(price_elasticity_overtime(filtered_data), use_container_width=True)
-
-    second_row = st.columns(2)
-    second_row[0].plotly_chart(shipping_vs_tax_ratio(filtered_data), use_container_width=True)
-    second_row[1].plotly_chart(sales_volume_overtime(filtered_data), use_container_width=True)
-
-    st.plotly_chart(price_and_qty_overtime(filtered_data), use_container_width=True)
 
 
 def marketing_attribution(market_data, media_data):

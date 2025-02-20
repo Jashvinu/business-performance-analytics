@@ -71,7 +71,7 @@ cash_flow_data = pd.merge(temp_df, cash_data, on=["Valuation Date", "Year", "Mon
 # ----------------------------------- Menu --------------------------------------
 menu = option_menu(menu_title=None, menu_icon=None, orientation="horizontal",
                    options=["Overview", "Sales Insights", "Customer's Report",
-                            "Demand Elasticity", "Marketing Attribution", "Accounts"])
+                            "Demand Elasticity", "Marketing Attribution"])
 
 match menu:
     case "Overview":
@@ -84,5 +84,5 @@ match menu:
         demand_elasticity(products_data)
     case "Marketing Attribution":
         marketing_attribution(market_data, media_data)
-    case "Accounts":
-        accounts(cash_flow_data)
+    # case "Accounts":
+    #     accounts(cash_flow_data)

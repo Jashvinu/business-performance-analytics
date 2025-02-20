@@ -147,7 +147,7 @@ def create_indicator_plot(df, column, title, color):
         go.Indicator(
             mode="number",
             value=monthly_cashflow[column].sum(),
-            number={"prefix": "$"},
+            number={"prefix": "₹"},
             title={"text": title, "font": {"size": 20}},
             domain={'y': [0, 1], 'x': [0.25, 0.75]}
         )

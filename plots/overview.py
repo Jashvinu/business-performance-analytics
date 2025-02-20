@@ -84,21 +84,116 @@ def debt_and_equity(df):
     return fig
 
 
+import plotly.graph_objects as go
+import pandas as pd
+import numpy as np
+
+# Define months constant
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
 def clv_by_cac_chart(df):
-    df["ratio"] = df["CLTV Monetary Value"] / df["Discount"]
-    df['Month'] = df['Valuation Date'].dt.month
-    df = df.groupby("Month")["ratio"].mean().reset_index()
-    df['Month'] = df['Month'].apply(lambda x: MONTHS[x-1])
-    fig = go.Figure(
-        data=go.Bar(
-            x=df["Month"], y=df["ratio"], marker=dict(color="#006d77"), text=round(df["ratio"], 2),
-            hovertext="CLTV/CAC = " + " " + round(df["ratio"], 1).astype(str)
+    """
+    Create a bar chart showing the ratio of Customer Lifetime Value to Customer Acquisition Cost.
+    
+    Args:
+        df (pd.DataFrame): DataFrame containing 'CLTV Monetary Value', 'Discount', and 'Valuation Date' columns
+    
+    Returns:
+        plotly.graph_objects.Figure: Bar chart of CLV/CAC ratio
+    """
+    try:
+        # Create a copy to avoid modifying original dataframe
+        df_copy = df.copy()
+        
+        # Validate required columns
+        required_columns = ['CLTV Monetary Value', 'Discount', 'Valuation Date']
+        if not all(col in df_copy.columns for col in required_columns):
+            missing_cols = [col for col in required_columns if col not in df_copy.columns]
+            raise ValueError(f"Missing required columns: {missing_cols}")
+            
+        # Calculate ratio and handle division by zero
+        df_copy["ratio"] = df_copy["CLTV Monetary Value"].div(
+            df_copy["Discount"].replace(0, np.nan)
         )
-    )
-    fig.update_layout(
-        title="Customer Lifetime Value/Cost per Acquired Customer Over Time",
-        xaxis_title="Month",
-        yaxis_title="CLTV:CAC",
-    )
-    fig = update_hover_layout(fig)
-    return fig
+        
+        # Extract month and convert to datetime if needed
+        if not pd.api.types.is_datetime64_any_dtype(df_copy['Valuation Date']):
+            df_copy['Valuation Date'] = pd.to_datetime(df_copy['Valuation Date'])
+        
+        df_copy['Month'] = df_copy['Valuation Date'].dt.month
+        
+        # Group by month and calculate mean ratio
+        monthly_ratios = (df_copy.groupby("Month")["ratio"]
+                         .mean()
+                         .round(2)
+                         .reset_index())
+        
+        # Convert month numbers to month names
+        monthly_ratios['Month'] = monthly_ratios['Month'].apply(lambda x: MONTHS[x-1])
+        
+        # Sort by month order
+        monthly_ratios['Month_Num'] = monthly_ratios['Month'].apply(lambda x: MONTHS.index(x))
+        monthly_ratios = monthly_ratios.sort_values('Month_Num')
+        
+        # Create the visualization
+        fig = go.Figure(
+            data=go.Bar(
+                x=monthly_ratios["Month"],
+                y=monthly_ratios["ratio"],
+                marker=dict(
+                    color="#006d77",
+                    pattern_shape="/"  # Add pattern for better visibility
+                ),
+                text=monthly_ratios["ratio"].round(2),
+                textposition='auto',
+                hovertemplate="Month: %{x}<br>" +
+                             "CLTV/CAC: %{y:.2f}<br>" +
+                             "<extra></extra>"
+            )
+        )
+        
+        # Update layout
+        fig.update_layout(
+            title={
+                'text': "Customer Lifetime Value to Acquisition Cost Ratio",
+                'y':0.95,
+                'x':0.5,
+                'xanchor': 'center',
+                'yanchor': 'top'
+            },
+            xaxis_title="Month",
+            yaxis_title="CLTV:CAC Ratio",
+            showlegend=False,
+            hovermode='x unified',
+            template='plotly_white',
+            height=500,
+            margin=dict(l=50, r=20, t=70, b=50),
+            yaxis=dict(
+                tickformat=".2f",
+                gridcolor='lightgray'
+            )
+        )
+        
+        # Add reference line at ratio = 1
+        fig.add_hline(
+            y=1, 
+            line_dash="dash", 
+            line_color="red",
+            annotation_text="Break-even ratio (1:1)",
+            annotation_position="bottom right"
+        )
+        
+        return fig
+        
+    except Exception as e:
+        print(f"Error creating CLV/CAC chart: {str(e)}")
+        # Return a figure with error message
+        return go.Figure().add_annotation(
+            text=f"Error creating chart: {str(e)}",
+            xref="paper",
+            yref="paper",
+            x=0.5,
+            y=0.5,
+            showarrow=False
+        )

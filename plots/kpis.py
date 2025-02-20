@@ -118,7 +118,7 @@ def get_clv(current_data: pd.DataFrame, previous_data: pd.DataFrame) -> go.Figur
     # indicator chart with CLTV Monetary Value for current period and monthly trend in the bg
     fig = indicator_chart(label="Customer Lifetime Value", current_value=current, delta_value=previous,
                           x_data=y_data["Month"], y_data=y_data["CLTV Monetary Value"],
-                          prefix="$", trace_name="CLV"
+                          prefix="₹", trace_name="CLV"
                           )
     return fig
 
@@ -201,7 +201,7 @@ def average_arpu(current_data: pd.DataFrame, previous_data: pd.DataFrame) -> go.
     arpu_data['Month'] = arpu_data['Month'].apply(lambda x: MONTHS[x - 1])
     # indicator chart with the ARPU data
     fig = indicator_chart(label="Average ARPU", current_value=current_arpu, delta_value=previous_arpu,
-                          x_data=arpu_data["Month"], y_data=arpu_data["arpu"], prefix="$",
+                          x_data=arpu_data["Month"], y_data=arpu_data["arpu"], prefix="₹",
                           trace_name="Total Revenue")
     return fig
 
