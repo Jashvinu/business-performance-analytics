@@ -7,7 +7,7 @@ from utils import preprocess_data
 from views import *
 
 # ------------------------------ Page Configuration------------------------------
-st.set_page_config(page_title="CFO-Dashboard", page_icon="📊", layout="wide")
+st.set_page_config(page_title="CXO Dashboard Extraa", page_icon="📊", layout="wide")
 # ----------------------------------- Page Styling ------------------------------
 
 with open("css/style.css") as css:
